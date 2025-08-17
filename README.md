@@ -4,7 +4,6 @@ A Python application for performing property skip tracing using the BatchData AP
 
 ## Features
 
-- **Single Property Lookup**: Process individual property addresses
 - **Batch Processing**: Process multiple properties from CSV files
 - **Multiple Export Formats**: Save results as CSV or Excel files
 - **Sandbox/Production Modes**: Test with mock data or use live API
@@ -16,42 +15,31 @@ A Python application for performing property skip tracing using the BatchData AP
 pip install -r requirements.txt
 ```
 
-2. Set up your API credentials:
+2. API Configuration:
+   - The application reads API tokens from `batchapi.csv` file
+   - The CSV contains separate tokens for sandbox and production environments
+   - Tokens are automatically selected based on the `USE_SANDBOX` setting
+
+3. (Optional) Configure environment settings:
 ```bash
 cp .env.example .env
 ```
 
-3. Edit `.env` and add your BatchData API key:
+Edit `.env` to control sandbox/production mode:
 ```
-BATCHDATA_API_KEY=your_api_key_here
 USE_SANDBOX=true  # Set to false for production
 ```
 
 ## Usage
 
-### Single Property Lookup
-
-```bash
-python main.py --mode single \
-  --street "1011 Rosegold St" \
-  --city "Franklin Square" \
-  --state "NY" \
-  --zip "11010"
-```
-
 ### Batch Processing from CSV
 
 ```bash
 # Process properties from CSV file
-python main.py --mode batch \
-  --input sample_properties.csv \
-  --output results.csv
+python main.py --input sample_properties.csv --output results.csv
 
 # Export as Excel file
-python main.py --mode batch \
-  --input sample_properties.csv \
-  --output results.xlsx \
-  --format excel
+python main.py --input sample_properties.csv --output results.xlsx --format excel
 ```
 
 ### Input CSV Format
@@ -83,12 +71,7 @@ The application returns the following information:
 
 ## Command Line Options
 
-- `--mode`: Processing mode (`single` or `batch`)
-- `--street`: Street address (single mode)
-- `--city`: City (single mode)
-- `--state`: State abbreviation (single mode)
-- `--zip`: ZIP code (single mode)
-- `--input`: Input CSV file path (batch mode)
+- `--input`: Input CSV file path (required)
 - `--output`: Output file path (default: `skip_trace_results.csv`)
 - `--format`: Output format (`csv` or `excel`)
 - `--api-key`: Override API key from command line
@@ -102,6 +85,10 @@ The application uses the following endpoint:
 
 - **Sandbox Mode**: Uses mock data for testing (no API credits consumed)
 - **Production Mode**: Uses live data (consumes API credits)
+
+The application automatically selects the appropriate API token from `batchapi.csv`:
+- Sandbox token is used when `USE_SANDBOX=true`
+- Production token is used when `USE_SANDBOX=false`
 
 Configure in `.env` file:
 ```

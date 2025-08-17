@@ -1,11 +1,37 @@
 import os
+import csv
 from dotenv import load_dotenv
 
 load_dotenv()
 
 class Config:
-    BATCHDATA_API_KEY = os.getenv('BATCHDATA_API_KEY')
-    USE_SANDBOX = os.getenv('USE_SANDBOX', 'true').lower() == 'true'
+    def __init__(self):
+        self._load_api_tokens()
+        self.USE_SANDBOX = os.getenv('USE_SANDBOX', 'true').lower() == 'true'
+        # Set the appropriate API key based on sandbox/production mode
+        self.BATCHDATA_API_KEY = self.SANDBOX_API_KEY if self.USE_SANDBOX else self.PRODUCTION_API_KEY
+    
+    def _load_api_tokens(self):
+        """Load API tokens from batchapi.csv file"""
+        self.SANDBOX_API_KEY = None
+        self.PRODUCTION_API_KEY = None
+        
+        csv_path = os.path.join(os.path.dirname(__file__), 'batchapi.csv')
+        
+        if os.path.exists(csv_path):
+            with open(csv_path, 'r') as f:
+                reader = csv.DictReader(f)
+                for row in reader:
+                    if row['type'] == 'sandbox':
+                        self.SANDBOX_API_KEY = row['token']
+                    elif row['type'] in ['live', 'production', 'true']:
+                        self.PRODUCTION_API_KEY = row['token']
+        
+        # Fallback to environment variable if CSV not found or tokens not loaded
+        if not self.SANDBOX_API_KEY and not self.PRODUCTION_API_KEY:
+            env_key = os.getenv('BATCHDATA_API_KEY')
+            self.SANDBOX_API_KEY = env_key
+            self.PRODUCTION_API_KEY = env_key
     
     SANDBOX_BASE_URL = "https://stoplight.io/mocks/batchdata/batchdata/20349728"
     PRODUCTION_BASE_URL = "https://api.batchdata.com/api/v1"
