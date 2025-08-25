@@ -1,11 +1,16 @@
 # Foreclosure Scaper Context Engineering 
 
-This file provides guidance to Claude Code (claude.ai/code) when working with code in this repository.  It contains rules for Rust development and deployment 
+This file provides guidance for working with code in this repository.  
+It contains rules for python development and deployment 
 
 ## Project Awareness & Context
 - Project contexts are located in `prps/` .
 - At the start of a new conversation, read`/prps/project_plan.md`to review project's architecture, style, and constraints.
+- At the start of a new conversation, read`/prps/task.md`to review project's architecture, style, and constraints.
 - At the start of a new conversation, review sessions log files in logs to understand project status and issues.
+
+## Logs
+- TBD
 
 ## Tasks 
 - Use the `tasks.md` file in the `prps/` to track the status of all the tasks that need to be done
@@ -14,20 +19,13 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 - **Mark completed tasks in `tasks.md`** immediately after finishing them.
 - Add new sub-tasks or TODOs discovered during development to `tasks.md` under a “Discovered During Work” section.
 
-## 🧠 AI Behavior Rules
-### Principle 1: Brutal Honesty First
-- Your primary directive is to reflect reality.  Avoid intellectual theater and wishful thinking.
-- **No Mocks**: Never create mock data, placeholder functions or simulated responses when a real integration point can be tested.  Your code must be proven to work with the actual system.
-- **No Theater**: If an integration fails, a library is incompatible, or a requirement is feasible, state it immediately and clearly.  Do not pretend with elaborate nonfunctional code.
-- **Reality Check**: Before implementing, verify that the integration points, APIs, or library you need actually exist and are accessible.
-- **Admit Ignorance**: If you do not understand how something works, your first step is to investigate through analysis and testing, or to ask for clarification. Do not guess.
-### Principle 2: Test-Driven Development (TDD) is mandatory
-- You will need to follow strict Test-Driven Development for all feature implementation.
-1. **RED**: Write a concise failing test that defines a new feature or requirement.
-2. **GREEN**: Write an absolute minimun amount of code necessary to make the test pass.
-3. **REFACTOR**: Clean up and improve the code you just wrote, ensuring all tests remain green.  Never skip or reorder this cycle.
+## General Principles:
+- **Never assume missing context. Ask questions if uncertain.**
+- **Never hallucinate libraries or functions** – only use known, verified Python packages.
+- **Always confirm file paths and module names** exist before referencing them in code or tests.
+- **Never delete or overwrite existing code** unless explicitly instructed to or if part of a task from `task.md`.
 
-### Principle 3: One feature at a time
+## Implementation Guideline
 - Focus exclusively on completing a single, well-defined feature before moving to the next.
 * Definition of Done: A task or feature is completed is defined by the following:
 - All tests are written and passing.
@@ -38,105 +36,36 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 - When you are adding a new feature such as a new method or function, stop to ask whether me permission to build feature.
 - Please fully explain reason for the function as a comment
 
-###  Principle 4: Break things internally
-* Proactively find you flaw before they become a problem for the developer and user
-- **FAIL FAST**: your code should fail immediately and loudly when its assumptions are violated
-- **AGRESSIVE VALIDATION**: Check every input and validation point. Assume nothing.
-- **LOUD ERRORS**: When something breaks, provide clear, descriptive error messages.
-- **TEST EDGE CASES**: Deliberately attempt to break your code with edge cases, invalid inputs, and unexpected conditions.
-
-### Principle 5: Optimized only after it works
-- Functionality and correctness comes first. Performance feature should be address methodically.
-- **MAKE IT WORK**: the first priority is functioning code that passes all tests.
-- **MAKE IT RIGHT**: refactor the working code for clarity, maintainability, and adherence to best practices
-- **MAKE IT FAST**: Only optimize after profiling reveals a real, measurable bottleneck. Never optimized based on assuptions.
-### General Principles:
-- **Never assume missing context. Ask questions if uncertain.**
-- **Never hallucinate libraries or functions** – only use known, verified Python packages.
-- **Always confirm file paths and module names** exist before referencing them in code or tests.
-- **Never delete or overwrite existing code** unless explicitly instructed to or if part of a task from `task.md`.
-
-
-### 📎 Coding Style & Conventions
-- **To be determine
+## Testing & Reliability
+- **After updating any logic**, check whether existing unit tests need to be updated. If so, do it.
+- Do not write test results or update README.md after testing.
+- **Tests should live in a `/tests` folder** mirroring the main app structure.
+  - Include 
+    - 1 test for expected use
+    - 1 edge case
+    - 1 failure case
 
 ## 📦 Adding New Features - Standard Procedure
 
 ### Feature Development Pattern
-When adding any new feature to this project, follow this established pattern:
+* When adding any new feature to this project, follow this established pattern:
 
 1. **Module Structure**
-   - Create a new file in `src/` named after your feature (e.g., `email_lookup.rs`, `data_validator.rs`)
+   - Create a new file in `src/` named after your feature (e.g., `email_lookup.py`, `data_validator.py`)
    - Define main struct and any result types needed
-   - Implement core logic following existing patterns from `phone_lookup.rs` or `case_scraper.rs`
-   - Register the module in `src/lib.rs` with `pub mod your_feature;`
+   - Implement core logic following existing patterns from `phone_lookup.py` 
 
 2. **Independent Testing**
-   - Create unit tests in `tests/test_your_feature_unit.rs`
-   - Tests must be runnable independently without `cargo build` or `cargo run`
-   - Run with: `cargo test test_your_feature_unit`
-   - Include: expected use case, edge cases, and failure cases
-
-3. **Feature Template**
-   ```rust
-   // src/your_feature.rs
-   use serde::{Deserialize, Serialize};
-   
-   #[derive(Debug, Clone, Serialize, Deserialize)]
-   pub struct YourFeature {
-       // fields
-   }
-   
-   #[derive(Debug)]
-   pub struct YourResult {
-       // result fields
-   }
-   
-   impl YourFeature {
-       pub fn new() -> Self {
-           // constructor
-       }
-       
-       pub async fn process(&self, input: &str) -> Result<YourResult, Box<dyn std::error::Error>> {
-           // main logic with proper error handling
-       }
-   }
-   ```
-
-4. **Test Template**
-   ```rust
-   // tests/test_your_feature_unit.rs
-   #[cfg(test)]
-   mod your_feature_unit_tests {
-       use foreclose_scrape::your_feature::{YourFeature, YourResult};
-       
-       #[test]
-       fn test_creation() {
-           let feature = YourFeature::new();
-           // assertions
-       }
-       
-       #[test]
-       fn test_edge_case() {
-           // edge case test
-       }
-       
-       #[test]
-       fn test_failure_case() {
-           // failure case test
-       }
-   }
-   ```
+   - Create unit tests in `tests/test_your_feature_unit.py`
 
 5. **Development Process**
    - Follow strict TDD: RED → GREEN → REFACTOR
-   - Write failing test first before any implementation
    - Implement minimal code to pass test
    - Refactor only after tests pass
    - Each feature must be completely independent and self-contained
    - Ask for permission before adding new methods or functions to existing modules
 
-### Structure & Modularity
+## Structure & Modularity
 - **Never create a file longer than 500 lines of code.** If a file approaches this limit, refactor by splitting it into modules or helper files.
 - **Organize code into clearly separated modules**, grouped by feature or responsibility.
 - Never hardcode sensitive information - Always use .env files for API keys and configuration
@@ -148,13 +77,4 @@ When adding any new feature to this project, follow this established pattern:
 - **Update `README.md`** when new features are added, dependencies change, or setup steps are modified.
 - **Comment non-obvious code** and ensure everything is understandable to a mid-level developer.
 - When writing complex logic, **add an inline `# Reason:` comment** explaining the why, not just the what.
-
-### Testing & Reliability
-- **After updating any logic**, check whether existing unit tests need to be updated. If so, do it.
-- Do not write test results or update README.md after testing.
-- **Tests should live in a `/tests` folder** mirroring the main app structure.
-  - Include at least:
-    - 1 test for expected use
-    - 1 edge case
-    - 1 failure case
 

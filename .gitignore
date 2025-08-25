@@ -1,1 +1,8 @@
 batchapi.csv
+.env
+__pycache__/
+.vscode/
+.idea/
+outputs/
+.venv
+.env.example

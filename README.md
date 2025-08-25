@@ -99,18 +99,26 @@ USE_SANDBOX=false  # For production use
 ## Project Structure
 
 ```
-skip-tracing/
+skip-tracing-gemini/
 ├── src/
+│   ├── case.py              # Case class
+│   ├── court_case_scraper.py # Scraper for court cases
 │   ├── api_client.py      # BatchData API wrapper
 │   ├── skip_tracer.py     # Skip trace business logic
-│   └── utils.py           # Utility functions
+│   ├── utils.py           # Utility functions
+│   └── main.py            # Main application
 ├── config.py              # Configuration settings
-├── main.py                # CLI application
 ├── requirements.txt       # Python dependencies
 ├── .env.example          # Example environment file
 ├── sample_properties.csv  # Sample input file
 └── README.md             # Documentation
 ```
+
+## Web Scraping
+
+The application uses Selenium to scrape data from the Connecticut Judicial Branch website. You will need to have Google Chrome and the correct version of chromedriver installed and in your PATH.
+
+
 
 ## Error Handling
 
