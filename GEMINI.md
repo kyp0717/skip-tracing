@@ -5,12 +5,16 @@ It contains rules for python development and deployment
 
 ## Project Awareness & Context
 - Project contexts are located in `prps/` .
-- At the start of a new conversation, read`/prps/project_plan.md`to review project's architecture, style, and constraints.
-- At the start of a new conversation, read`/prps/task.md`to review project's architecture, style, and constraints.
-- At the start of a new conversation, review sessions log files in logs to understand project status and issues.
+- At the start of a new conversation, read `/prps/project_plan.md`to review project's architecture, style, and constraints.
+- At the start of a new conversation, read `/prps/task.md`to review project's architecture, style, and constraints.
+- At the start of a new conversation, read `/prps/requirements.md`to review project's architecture, style, and constraints.
+- At the start of a new conversation, review sessions log files in folder `logs` to understand project status and issues.
 
 ## Logs
-- TBD
+- Create a folder call `/logs` if it does not exist.
+- When each phase is completed successfully, create a high level of the summary and save the summary file in this folder.
+- A log summary should be created for each phase.
+- The format of the log file should look like this phase_xx_yyyymmdd.md.
 
 ## Tasks 
 - Use the `tasks.md` file in the `prps/` to track the status of all the tasks that need to be done

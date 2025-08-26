@@ -6,26 +6,21 @@
 - ⏳ Pending
 - ❌ Blocked
 
-## Phase 1: Web Scraper
+## Phase 1 - Requirements
+- ✅ Create `prps/requirements.md`.
+- ✅ Create `/logs` directory.
+- ✅ Create `logs/phase_log_20250826.md`.
 
-### Infrastructure & Setup
-- ✅ Setup project structure.
-- ✅ Create `prps/project_plan.md`.
-- ✅ Create `prps/tasks.md`.
-- ✅ Reorganized the project to store code in `src/` and outputs in `outputs/`.
+## Phase 2 - Setup
+- ✅ Build the `requirements.txt` for python development.
+- ✅ Setup any other configuration file as needed.
 
-### Web Scraping Implementation
-- ✅ Create `src/case.py` and implement the `Case` class.
-- ✅ Create `src/court_case_scraper.py` and implement the `CaseScraper` class.
+## Phase 3a - Implement site connection
+- ✅ Do not implement testing. Only write or modify code in this phase.
 
-## Phase 2: Skip Tracing
-- ✅ Implement a python script to use property addresses derived from web scraping in phase 1.
-- ✅ Implement a python script to connect to a skip tracing API.
-- ✅ Implement a python script to process the data from the API.
-- ✅ Implement a python script to orchestrate the entire skip tracing process.
 
-## Phase 3: Data Export
-- ✅ Implement a python script to write the results to a csv file.
+## Phase 3b - Testing
+- ✅ Test site connection
 
-## Phase 4: Testing
-- ⏳ Add unit tests for all new features.
+## Phase 4a - Implement scraping for docket number by town
+- ✅ Web scrape for case docket number from Connecticut Judicial Site

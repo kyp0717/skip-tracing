@@ -5,4 +5,5 @@ __pycache__/
 .idea/
 outputs/
 .venv
+venv/
 .env.example
