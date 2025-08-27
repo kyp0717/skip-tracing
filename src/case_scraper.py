@@ -50,9 +50,15 @@ class CaseScraper:
                 case_name = cells[3].text.strip()
                 defendant = case_name.split(' v. ')[-1]
 
+                docket_number_cell = cells[4]
+                docket_number = docket_number_cell.text.strip()
+                docket_link = docket_number_cell.find('a')
+                docket_url = docket_link['href'] if docket_link else ''
+
                 case = {
                     'case_name': case_name,
-                    'docket_number': cells[4].text.strip(),
+                    'docket_number': docket_number,
+                    'docket_url': f"https://civilinquiry.jud.ct.gov/{docket_url}",
                     'address': cells[1].text.strip(),
                     'defendant': defendant
                 }

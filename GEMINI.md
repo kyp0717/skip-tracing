@@ -14,7 +14,9 @@ It contains rules for python development and deployment
 - Create a folder call `/logs` if it does not exist.
 - When each phase is completed successfully, create a high level of the summary and save the summary file in this folder.
 - A log summary should be created for each phase.
-- The format of the log file should look like this phase_xx_yyyymmdd.md.
+- The format of the log file should look like this phase_xx.md.
+- The summary should also be date stamped.
+- If a phase has been reimplemented or updated, summarized the changes and append the summary to the existing log file with datestamp. 
 
 ## Tasks 
 - Use the `tasks.md` file in the `prps/` to track the status of all the tasks that need to be done

@@ -6,12 +6,14 @@
 3. Modify and update tasks.md as needed as project progess.
 4. Utilize sub agents for specific tasks
 5. Run all tests in virtual environment using uv.
+6. Summarized at a high level the work completed as a log file in the format specified.
 
 
 ## Goal
 - Build a web scraper in python.
 - Scraper will scrape a CT Judiciary civil inquiry site to get a list of court cases by town.
 - Use the docket number to scrape the for the defendant name and address 
+- Using the address, perform and http post request for phone numbers using the batchdata api.
 
 
 ## Phase 1 - Requirements
@@ -25,8 +27,7 @@
 - Save the log file in `/log`.  If folder does not exist, create one.
 
 ## Phase 2 - Setup
-- Build the `requirement.txt` for python development.
-- Setup any other configuration file as needed.
+- Setup configuration files such as `requirement.txt` and others as needed.
 
 ## Phase 3a - Open URL and extract HTML 
 - Do not implement testing. Only write or modify code in this phase.
@@ -36,11 +37,39 @@
 - Build the test for Phase 3a.  Do not build another test except for phase 3a.
 - Run the test in a virtual environment us uv.  Do not run any other test.  
 
-## Phase 4a - Search by Town 
+## Phase 4 - Search by Town 
+### Implementation
 - Search by town on the search page.
 - Use the id tag "ctl00_ContentPlaceHolder1_txtCityTown" to input the town name.
 - Use the Id tax "ctl00_ContentPlaceHolder1_btnSubmit" to submit the form after inputting town name.
-- Return a list of court cases that include name of case, docket number, address and defendant's name.
+- Return a list of court cases that include name of case, defendant name, address, docket number, and docket number url 
+### Test
+- Test this implemenation by searching with 'Middletonw' as an example.
+- When executing the test, display the input to the test and the output of test.
+- The output of the test should have heading with "Phase xx - titele "
+<!-- - Use xml format provided in ... to be determine. -->
 
-## Phase 4b - Test Search by Town 
-- Test phase 4a by search with 'Middletonw' as an example.
+## Phase 5 - Post Request to Sandbox Batch API
+### Implementation
+- Implement http post request to the following url:
+- sandbox url - 'https://stoplight.io/mocks/batchdata/batchdata/20349728/property/skip-trace'
+- Tokens for api access is provided in the file batchapi.csv.  Please incorporate
+- If the request is successful, return all phone numbers associated with this addresses.
+### Test
+- Buid test that can connect to sandbox api
+- Use the test cases provided in the file `tests/batchapi_test_cases.json`.
+- Run the test.  
+- When executing the test, display the input to the test and the output of test.
+
+## Phase 6 - Post Request to Prod Batch API
+### Implementation
+- Implement http post request to the following url:
+- prod url - https://api.batchdata.com/api/v1/property/skip-trace
+- Tokens for api access is provided in the file batchapi.csv.  Please incorporate
+- If the request is successful, return all phone numbers associated with this addresses.
+### Test
+- Buid test that can connect to sandbox api
+- Use the addresses from the first two items in the list derived in phase4a as test cases.
+- Run the test.  
+- When executing the test, display the input to the test and the output of test.
+
