@@ -19,19 +19,26 @@ class CaseScraper:
         """
         self.driver = self.connector.connect()
         if not self.driver:
+            print("Failed to connect to the website")
             return []
 
         try:
+            print(f"Connected to: {self.driver.current_url}")
+            print(f"Page title: {self.driver.title}")
+            
             # Find the town input field and enter the town name
             town_input = self.driver.find_element(By.ID, "ctl00_ContentPlaceHolder1_txtCityTown")
             town_input.send_keys(self.town)
+            print(f"Entered town: {self.town}")
 
             # Find and click the submit button
             submit_button = self.driver.find_element(By.ID, "ctl00_ContentPlaceHolder1_btnSubmit")
             submit_button.click()
+            print("Clicked submit button")
 
             # Wait for the page to load and get the page source
-            self.driver.implicitly_wait(10) 
+            import time
+            time.sleep(5)  # Give more time for results to load
             page_source = self.driver.page_source
 
             # Parse the page source with BeautifulSoup
@@ -40,6 +47,11 @@ class CaseScraper:
             cases = []
             table = soup.find('table', id='ctl00_ContentPlaceHolder1_gvPropertyResults')
             if not table:
+                print("No results table found")
+                # Try to find any error messages
+                error_msg = soup.find('span', id='ctl00_ContentPlaceHolder1_lblMessage')
+                if error_msg:
+                    print(f"Error message: {error_msg.text}")
                 return []
 
             for row in table.find_all('tr')[1:]:

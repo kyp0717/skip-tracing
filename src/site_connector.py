@@ -14,8 +14,14 @@ class SiteConnector:
         Connect to the specified URL using Selenium.
         """
         try:
+            chrome_options = webdriver.ChromeOptions()
+            chrome_options.add_argument('--headless')
+            chrome_options.add_argument('--no-sandbox')
+            chrome_options.add_argument('--disable-dev-shm-usage')
+            chrome_options.add_argument('--disable-gpu')
+            
             service = ChromeService(executable_path=ChromeDriverManager().install())
-            self.driver = webdriver.Chrome(service=service)
+            self.driver = webdriver.Chrome(service=service, options=chrome_options)
             self.driver.get(self.url)
             return self.driver
         except Exception as e:

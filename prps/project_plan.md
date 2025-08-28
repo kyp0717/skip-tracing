@@ -53,12 +53,12 @@
 ### Implementation
 - Implement http post request to the following url:
 - sandbox url - 'https://stoplight.io/mocks/batchdata/batchdata/20349728/property/skip-trace'
-- Tokens for api access is provided in the file batchapi.csv.  Please incorporate
+- Tokens for api access is provided in the file `../batchapi.csv`.  Please incorporate
 - If the request is successful, return all phone numbers associated with this addresses.
 ### Test
 - Buid test that can connect to sandbox api
 - Use the test cases provided in the file `tests/batchapi_test_cases.json`.
-- Run the test.  
+- Run the test.  -
 - When executing the test, display the input to the test and the output of test.
 
 ## Phase 6 - Post Request to Prod Batch API
@@ -72,4 +72,5 @@
 - Use the addresses from the first two items in the list derived in phase4a as test cases.
 - Run the test.  
 - When executing the test, display the input to the test and the output of test.
+- Reminder.  Please use only 2 addresses for testing.  Do not use more than 2 addresses.
 
