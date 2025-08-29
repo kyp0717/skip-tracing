@@ -2,6 +2,7 @@ import sys
 import os
 sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
 
+import csv
 from src.site_connector import SiteConnector
 from selenium.webdriver.common.by import By
 from bs4 import BeautifulSoup
@@ -19,19 +20,26 @@ class CaseScraper:
         """
         self.driver = self.connector.connect()
         if not self.driver:
+            print("Failed to connect to the website")
             return []
 
         try:
+            print(f"Connected to: {self.driver.current_url}")
+            print(f"Page title: {self.driver.title}")
+            
             # Find the town input field and enter the town name
             town_input = self.driver.find_element(By.ID, "ctl00_ContentPlaceHolder1_txtCityTown")
             town_input.send_keys(self.town)
+            print(f"Entered town: {self.town}")
 
             # Find and click the submit button
             submit_button = self.driver.find_element(By.ID, "ctl00_ContentPlaceHolder1_btnSubmit")
             submit_button.click()
+            print("Clicked submit button")
 
             # Wait for the page to load and get the page source
-            self.driver.implicitly_wait(10) 
+            import time
+            time.sleep(5)  # Give more time for results to load
             page_source = self.driver.page_source
 
             # Parse the page source with BeautifulSoup
@@ -40,6 +48,11 @@ class CaseScraper:
             cases = []
             table = soup.find('table', id='ctl00_ContentPlaceHolder1_gvPropertyResults')
             if not table:
+                print("No results table found")
+                # Try to find any error messages
+                error_msg = soup.find('span', id='ctl00_ContentPlaceHolder1_lblMessage')
+                if error_msg:
+                    print(f"Error message: {error_msg.text}")
                 return []
 
             for row in table.find_all('tr')[1:]:
@@ -71,6 +84,32 @@ class CaseScraper:
             return []
         finally:
             self.connector.close()
+    
+    def save_to_csv(self, cases, filename=None):
+        """
+        Save scraped cases to a CSV file.
+        """
+        if not filename:
+            filename = f"cases_{self.town.lower().replace(' ', '_')}.csv"
+        
+        if not cases:
+            print(f"No cases to save to {filename}")
+            return filename
+        
+        # Define CSV headers
+        fieldnames = ['case_name', 'defendant', 'address', 'docket_number', 'docket_url']
+        
+        try:
+            with open(filename, 'w', newline='', encoding='utf-8') as csvfile:
+                writer = csv.DictWriter(csvfile, fieldnames=fieldnames)
+                writer.writeheader()
+                for case in cases:
+                    writer.writerow(case)
+            print(f"Successfully saved {len(cases)} cases to {filename}")
+        except Exception as e:
+            print(f"Error saving to CSV: {e}")
+        
+        return filename
 
 if __name__ == '__main__':
     # Example usage
@@ -79,7 +118,10 @@ if __name__ == '__main__':
     cases = scraper.scrape_cases()
     if cases:
         print(f"Found {len(cases)} cases for {town}:")
-        for case in cases:
+        for case in cases[:3]:  # Show first 3 cases
             print(case)
+        # Save to CSV
+        csv_filename = scraper.save_to_csv(cases)
+        print(f"Results saved to: {csv_filename}")
     else:
         print(f"No cases found for {town}.")
