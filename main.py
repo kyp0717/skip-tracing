@@ -1,75 +1,151 @@
 #!/usr/bin/env python3
+"""
+Main application for CT Judiciary case scraper with phone lookup
+"""
 
-import argparse
 import sys
-import os
-from typing import Optional
-from src.skip_tracer import SkipTracer
-from src.utils import (
-    read_input_csv, 
-    save_results_to_csv, 
-    save_results_to_excel,
-    print_summary,
-    validate_address
-)
+import json
+from src.case_scraper import CaseScraper
+from src.batch_api_connector import BatchAPIConnector
+
+
+def parse_address_to_dict(address_str):
+    """Parse address string into structured format for API."""
+    parts = address_str.split(',')
+    if len(parts) >= 2:
+        street = parts[0].strip()
+        remainder = parts[1].strip()
+        
+        # Split city, state, zip
+        words = remainder.split()
+        if len(words) >= 2:
+            zip_code = words[-1]
+            state = words[-2]
+            city = ' '.join(words[:-2]) if len(words) > 2 else words[0]
+            
+            return {
+                'street': street,
+                'city': city,
+                'state': state,
+                'zip': zip_code
+            }
+    return None
+
 
 def main():
-    parser = argparse.ArgumentParser(
-        description='BatchData Skip Tracing Tool - Find property owner contact information (Batch Processing)'
-    )
+    """
+    Main function to orchestrate the scraping and phone lookup process
+    """
+    # Parse command line arguments
+    if len(sys.argv) < 2:
+        print("Usage: python main.py <town_name> [--skip-trace] [--prod]")
+        print("       --skip-trace: Enable batch API phone lookup")
+        print("       --prod: Use production API instead of sandbox")
+        sys.exit(1)
     
-    parser.add_argument('--input', type=str, required=True,
-                       help='Input CSV file path')
-    parser.add_argument('--output', type=str, default='skip_trace_results.csv',
-                       help='Output file path (default: skip_trace_results.csv)')
+    town_name = sys.argv[1]
+    enable_skip_trace = '--skip-trace' in sys.argv
+    use_production = '--prod' in sys.argv
     
-    parser.add_argument('--format', choices=['csv', 'excel'], default='csv',
-                       help='Output format (default: csv)')
-    
-    parser.add_argument('--api-key', type=str, help='BatchData API key (overrides .env)')
-    
-    args = parser.parse_args()
+    print(f"\n{'='*60}")
+    print(f"CT Judiciary Case Scraper")
+    print(f"{'='*60}")
+    print(f"\nSearching for cases in: {town_name}")
+    if enable_skip_trace:
+        api_mode = "PRODUCTION" if use_production else "SANDBOX"
+        print(f"Skip trace (phone lookup) enabled: YES ({api_mode})")
+    print(f"{'-'*40}")
     
     try:
-        tracer = SkipTracer(api_key=args.api_key)
+        # Phase 4 Integration: Case Scraping
+        # Initialize the case scraper
+        scraper = CaseScraper(town_name)
         
-        print(f"\nReading addresses from: {args.input}")
-        addresses = read_input_csv(args.input)
+        # Scrape cases for the specified town
+        cases = scraper.scrape_cases()
         
-        if not addresses:
-            print("Error: No valid addresses found in input file")
-            sys.exit(1)
+        if not cases:
+            print(f"No cases found for {town_name}")
+            return
         
-        print(f"Found {len(addresses)} addresses to process")
-        print("-" * 50)
+        print(f"\nFound {len(cases)} cases")
         
-        results_df = tracer.process_batch(
-            addresses=addresses
-        )
+        # Display first 5 cases as examples
+        print(f"\n{'-'*40}")
+        print("Sample Results (First 5 cases):")
+        print(f"{'-'*40}")
         
-        if results_df.empty:
-            print("\nNo results obtained from skip trace")
-            sys.exit(1)
+        for i, case in enumerate(cases[:5], 1):
+            print(f"\nCase {i}:")
+            print(f"  Case Name: {case['case_name']}")
+            print(f"  Defendant: {case['defendant']}")
+            print(f"  Address: {case['address']}")
+            print(f"  Docket #: {case['docket_number']}")
+            print(f"  Docket URL: {case['docket_url']}")
         
-        if args.format == 'excel':
-            output_file = args.output.replace('.csv', '.xlsx')
-            save_results_to_excel(results_df, output_file)
-        else:
-            save_results_to_csv(results_df, args.output)
+        # Phase 5/6 Integration: Batch API Phone Lookup
+        if enable_skip_trace:
+            phase_num = "6" if use_production else "5"
+            api_env = "prod" if use_production else "sandbox"
+            api_label = "Production" if use_production else "Sandbox"
+            
+            print(f"\n{'='*60}")
+            print(f"Phase {phase_num}: Batch API Phone Lookup ({api_label})")
+            print(f"{'='*60}")
+            
+            # Initialize the batch API connector
+            api_connector = BatchAPIConnector(api_env)
+            
+            # Process first 2 cases for phone lookup (as per requirements)
+            cases_to_process = cases[:2]
+            print(f"\nProcessing {len(cases_to_process)} addresses for phone lookup...")
+            
+            for i, case in enumerate(cases_to_process, 1):
+                print(f"\n{'-'*40}")
+                print(f"Processing Case {i}:")
+                print(f"  Defendant: {case['defendant']}")
+                print(f"  Address: {case['address']}")
+                
+                # Parse address into structured format
+                address_dict = parse_address_to_dict(case['address'])
+                
+                if address_dict:
+                    # Send skip trace request
+                    phone_numbers = api_connector.send_skip_trace_request(address_dict)
+                    
+                    # Add phone numbers to case data
+                    case['phone_numbers'] = phone_numbers
+                    
+                    if phone_numbers:
+                        print(f"  Phone Numbers Found: {', '.join(phone_numbers)}")
+                    else:
+                        print("  No phone numbers found")
+                else:
+                    print("  Could not parse address")
+                    case['phone_numbers'] = []
         
-        print_summary(results_df)
-    
-    except FileNotFoundError as e:
-        print(f"Error: {e}")
-        sys.exit(1)
-    
-    except ValueError as e:
-        print(f"Error: {e}")
-        sys.exit(1)
-    
+        # Save results to both JSON and CSV files
+        json_filename = f"cases_{town_name.lower().replace(' ', '_')}.json"
+        with open(json_filename, 'w') as f:
+            json.dump(cases, f, indent=2)
+        
+        # Save to CSV using the scraper's save_to_csv method
+        csv_filename = scraper.save_to_csv(cases)
+        
+        print(f"\n{'-'*40}")
+        print(f"Results saved to:")
+        print(f"  JSON: {json_filename}")
+        print(f"  CSV: {csv_filename}")
+        print(f"Total cases found: {len(cases)}")
+        if enable_skip_trace:
+            enriched_count = sum(1 for c in cases if c.get('phone_numbers'))
+            print(f"Cases with phone numbers: {enriched_count}")
+        print(f"{'='*60}\n")
+        
     except Exception as e:
-        print(f"Unexpected error: {e}")
+        print(f"\nError: {str(e)}")
         sys.exit(1)
+
 
 if __name__ == "__main__":
     main()
