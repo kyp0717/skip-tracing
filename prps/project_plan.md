@@ -7,7 +7,11 @@
 4. Utilize sub agents for specific tasks
 5. Run all tests in virtual environment using uv.
 6. Summarized at a high level the work completed as a log file in the format specified.
-
+7. When executing the test during the conversation: 
+    - Display the heading with "FEATURE TEST: Phase xx - new_feature"
+    - Display test input and test output 
+    - If test fail, display failure in red in the console.
+    - If test is successful, display success in green in the console.
 
 ## Goal
 - Build a web scraper in python.
@@ -37,18 +41,20 @@
 - Build the test for Phase 3a.  Do not build another test except for phase 3a.
 - Run the test in a virtual environment us uv.  Do not run any other test.  
 
-## Phase 4 - Search by Town 
-### Implementation
-- Search by town on the search page.
+## Phase 4 - Web Scraping  
+### Feature Implementation
+- CT Jucial URL: https://civilinquiry.jud.ct.gov/PropertyAddressSearch.aspx
+- Scrape for cases by first performing a search by town on the search page which is the CT Jucial URL.
 - Use the id tag "ctl00_ContentPlaceHolder1_txtCityTown" to input the town name.
 - Use the Id tax "ctl00_ContentPlaceHolder1_btnSubmit" to submit the form after inputting town name.
 - Return a list of court cases that include name of case, defendant name, address, docket number, and docket number url 
-### Test
+- Some cases may have multiple defendants.  Extract all defendants.
+### Test Feature
 - Test this implemenation by searching with 'Middletonw' as an example.
-- When executing the test, display the input to the test and the output of test.
-- The output of the test should have heading with "Phase xx - titele "
-<!-- - Use xml format provided in ... to be determine. -->
-
+### Integration Implementation
+- Integrate the feature created in this phase by creating a main.py file and using the classes and related code. 
+### Test Integration
+- Test the integration implemenation by searching with 'Middletonw' as an example.
 ## Phase 5 - Post Request to Sandbox Batch API
 ### Implementation
 - Implement http post request to the following url:
@@ -58,9 +64,13 @@
 ### Test
 - Buid test that can connect to sandbox api
 - Use the test cases provided in the file `tests/batchapi_test_cases.json`.
-- Run the test.  -
-- When executing the test, display the input to the test and the output of test.
-
+- Run the test.  
+### Integration Implementation
+- Integrate the feature created in this phase by integrating with the main.py file and using the classes and related code. 
+### Test Integration
+- Test the main.py after integration.
+- Use the test cases provided in the file `tests/batchapi_test_cases.json`.
+- Run the test. 
 ## Phase 6 - Post Request to Prod Batch API
 ### Implementation
 - Implement http post request to the following url:
@@ -68,9 +78,13 @@
 - Tokens for api access is provided in the file batchapi.csv.  Please incorporate
 - If the request is successful, return all phone numbers associated with this addresses.
 ### Test
-- Buid test that can connect to sandbox api
-- Use the addresses from the first two items in the list derived in phase4a as test cases.
+- Buid test that can connect to prod api
+- Use the addresses from the first two items in the list derived from web scraping.
 - Run the test.  
 - When executing the test, display the input to the test and the output of test.
 - Reminder.  Please use only 2 addresses for testing.  Do not use more than 2 addresses.
-
+### Integration Implementation
+- Integrate the feature created in this phase by integrating with the main.py file and using the classes and related code. 
+### Test Integration
+- Test the main.py after integration.
+- When executing the test, display the input to the test and the output of test.

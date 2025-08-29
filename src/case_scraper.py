@@ -2,6 +2,7 @@ import sys
 import os
 sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
 
+import csv
 from src.site_connector import SiteConnector
 from selenium.webdriver.common.by import By
 from bs4 import BeautifulSoup
@@ -83,6 +84,32 @@ class CaseScraper:
             return []
         finally:
             self.connector.close()
+    
+    def save_to_csv(self, cases, filename=None):
+        """
+        Save scraped cases to a CSV file.
+        """
+        if not filename:
+            filename = f"cases_{self.town.lower().replace(' ', '_')}.csv"
+        
+        if not cases:
+            print(f"No cases to save to {filename}")
+            return filename
+        
+        # Define CSV headers
+        fieldnames = ['case_name', 'defendant', 'address', 'docket_number', 'docket_url']
+        
+        try:
+            with open(filename, 'w', newline='', encoding='utf-8') as csvfile:
+                writer = csv.DictWriter(csvfile, fieldnames=fieldnames)
+                writer.writeheader()
+                for case in cases:
+                    writer.writerow(case)
+            print(f"Successfully saved {len(cases)} cases to {filename}")
+        except Exception as e:
+            print(f"Error saving to CSV: {e}")
+        
+        return filename
 
 if __name__ == '__main__':
     # Example usage
@@ -91,7 +118,10 @@ if __name__ == '__main__':
     cases = scraper.scrape_cases()
     if cases:
         print(f"Found {len(cases)} cases for {town}:")
-        for case in cases:
+        for case in cases[:3]:  # Show first 3 cases
             print(case)
+        # Save to CSV
+        csv_filename = scraper.save_to_csv(cases)
+        print(f"Results saved to: {csv_filename}")
     else:
         print(f"No cases found for {town}.")
