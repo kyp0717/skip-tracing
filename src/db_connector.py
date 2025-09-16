@@ -261,6 +261,56 @@ class DatabaseConnector:
             logger.error(f"Error fetching cases with defendants: {e}")
             return []
 
+    def get_town_skip_trace_stats(self, town: str) -> Dict:
+        """Get skip trace statistics for a town
+        Returns:
+            - total_cases: Total unique docket numbers for the town
+            - traced_cases: Number of cases that have been skip traced
+            - untraced_cases: Number of cases not yet skip traced
+        """
+        try:
+            # Get all cases for the town
+            cases = self.get_cases_by_town(town)
+            docket_numbers = list(set(case['docket_number'] for case in cases))
+            total_cases = len(docket_numbers)
+
+            if total_cases == 0:
+                return {
+                    'town': town,
+                    'scraped': False,
+                    'total_cases': 0,
+                    'traced_cases': 0,
+                    'untraced_cases': 0
+                }
+
+            # Get skip traces for these docket numbers
+            traced_dockets = set()
+            for docket in docket_numbers:
+                skiptraces = self.get_skiptraces_by_docket(docket)
+                if skiptraces:
+                    traced_dockets.add(docket)
+
+            traced_cases = len(traced_dockets)
+            untraced_cases = total_cases - traced_cases
+
+            return {
+                'town': town,
+                'scraped': True,
+                'total_cases': total_cases,
+                'traced_cases': traced_cases,
+                'untraced_cases': untraced_cases
+            }
+        except Exception as e:
+            logger.error(f"Error getting town skip trace stats: {str(e)}")
+            return {
+                'town': town,
+                'scraped': False,
+                'total_cases': 0,
+                'traced_cases': 0,
+                'untraced_cases': 0,
+                'error': str(e)
+            }
+
     # Skip trace status checking methods
     def has_been_skip_traced(self, docket_number: str, is_sandbox: bool = False) -> bool:
         """Check if a case has already been skip traced

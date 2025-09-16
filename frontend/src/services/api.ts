@@ -115,3 +115,45 @@ export const caseService = {
     }
   },
 }
+
+// Skip trace statistics interface
+export interface TownSkipTraceStats {
+  town: string
+  scraped: boolean
+  total_cases: number
+  traced_cases: number
+  untraced_cases: number
+  error?: string
+}
+
+// Skip trace service
+export const skipTraceService = {
+  // Get skip trace statistics for a town
+  async getTownStats(town: string): Promise<TownSkipTraceStats> {
+    try {
+      const response = await api.get(`/api/v1/skiptraces/town-stats/${town}`)
+      return response.data
+    } catch (error) {
+      console.error('Error fetching town skip trace stats:', error)
+      return {
+        town,
+        scraped: false,
+        total_cases: 0,
+        traced_cases: 0,
+        untraced_cases: 0,
+        error: 'Failed to fetch statistics'
+      }
+    }
+  },
+
+  // Perform skip trace for a town
+  async performTownSkipTrace(town: string): Promise<any> {
+    try {
+      const response = await api.post('/api/v1/skiptraces/town-batch', { town })
+      return response.data
+    } catch (error) {
+      console.error('Error performing town skip trace:', error)
+      throw error
+    }
+  }
+}

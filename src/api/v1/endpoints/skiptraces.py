@@ -154,6 +154,104 @@ async def get_skip_traces_by_defendant(
         raise HTTPException(status_code=500, detail=str(e))
 
 
+@router.get("/town-stats/{town}")
+async def get_town_skip_trace_stats(
+    town: str,
+    db: DatabaseConnector = Depends(get_db)
+):
+    """
+    Get skip trace statistics for a specific town
+    Returns total cases found, traced cases, and untraced cases
+    """
+    try:
+        stats = db.get_town_skip_trace_stats(town)
+        return stats
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=str(e))
+
+
+@router.post("/town-batch")
+async def perform_town_batch_skip_trace(
+    request: dict,
+    background_tasks: BackgroundTasks,
+    db: DatabaseConnector = Depends(get_db)
+):
+    """
+    Perform skip trace for all untraced cases in a town
+    """
+    town = request.get('town')
+    if not town:
+        raise HTTPException(status_code=400, detail="Town is required")
+
+    try:
+        # Get all cases for the town
+        cases = db.get_cases_by_town(town)
+        if not cases:
+            raise HTTPException(status_code=404, detail=f"No cases found for town: {town}")
+
+        # Initialize skip trace integration
+        skip_trace = SkipTraceIntegration()
+
+        # Track results
+        processed = 0
+        skipped = 0
+        failed = 0
+
+        for case in cases:
+            docket_number = case['docket_number']
+
+            # Check if already skip traced
+            existing_traces = db.get_skiptraces_by_docket(docket_number)
+            if existing_traces:
+                skipped += 1
+                continue
+
+            # Get defendant addresses for this case
+            defendants = db.get_defendants_by_docket(docket_number)
+            if not defendants:
+                failed += 1
+                continue
+
+            addresses = []
+            for defendant in defendants:
+                if defendant.get('address'):
+                    addresses.append({
+                        'street': defendant['address'],
+                        'city': defendant.get('town', ''),
+                        'state': defendant.get('state', 'CT'),
+                        'zip': defendant.get('zip', '')
+                    })
+
+            if addresses:
+                # Perform skip trace
+                result = skip_trace.perform_skip_trace(
+                    docket_number=docket_number,
+                    addresses=addresses,
+                    use_sandbox=False
+                )
+
+                if result['success']:
+                    processed += 1
+                else:
+                    failed += 1
+            else:
+                failed += 1
+
+        return {
+            "town": town,
+            "total_cases": len(cases),
+            "processed": processed,
+            "skipped": skipped,
+            "failed": failed,
+            "message": f"Skip trace batch completed for {town}"
+        }
+
+    except HTTPException:
+        raise
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=str(e))
+
+
 @router.get("/costs", response_model=SkipTraceCostSummary)
 async def get_skip_trace_costs(
     start_date: Optional[str] = Query(None, description="Start date (YYYY-MM-DD)"),
