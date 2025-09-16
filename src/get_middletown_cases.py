@@ -1,7 +1,7 @@
 import csv
 import time
-from src.case_scraper import CaseScraper
-from src.batch_api_connector import BatchAPIConnector
+from case_scraper import CaseScraper
+from batch_api_connector import BatchAPIConnector
 
 def main():
     print("="*60)

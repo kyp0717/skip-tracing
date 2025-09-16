@@ -43,7 +43,7 @@
 ## Initial Implementation
 
 ## Phase 1 - Requirements
-- ✅ Create `prps/requirements.md`.
+- ✅ Create `context/requirements.md`.
 - ✅ Create `/logs` directory.
 - ✅ Create `logs/phase_log_20250826.md`.
 

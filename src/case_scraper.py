@@ -3,7 +3,7 @@ import os
 sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
 
 import csv
-from src.site_connector import SiteConnector
+from site_connector import SiteConnector
 from selenium.webdriver.common.by import By
 from bs4 import BeautifulSoup
 

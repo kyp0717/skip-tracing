@@ -1,4 +1,4 @@
-from src.case_scraper import CaseScraper
+from case_scraper import CaseScraper
 import json
 
 scraper = CaseScraper('Middletown')

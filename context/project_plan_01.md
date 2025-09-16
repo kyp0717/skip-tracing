@@ -21,7 +21,7 @@
 
 
 ## Phase 1 - Requirements
-- Create a file in folder /prps/ call requirements.md
+- Create a file in folder /context/ call requirements.md
 - In the requirements, explain what are the technical requirements that are needed for development of a scraper using python.
 - For example, if selenium is required for this development, explain its purposes.
 - In another section, list the python packages that are needed and why this is required.
