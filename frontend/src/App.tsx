@@ -8,7 +8,7 @@ function DashboardLayout() {
       {/* Sidebar */}
       <div className="w-64 bg-white shadow-md">
         <div className="p-4">
-          <h1 className="text-xl font-bold text-gray-800">Skip Trace DB</h1>
+          <h1 className="text-xl font-bold text-gray-800">AE Solutions</h1>
         </div>
         <nav className="mt-4">
           <Link

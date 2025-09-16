@@ -169,6 +169,39 @@ async def get_scrape_history(
         raise HTTPException(status_code=500, detail=str(e))
 
 
+@router.post("/scrape-town")
+async def scrape_single_town(
+    request: ScrapeRequest,
+    db: DatabaseConnector = Depends(get_db)
+):
+    """
+    Synchronously scrape a single town and store in database
+    """
+    try:
+        # Validate town
+        ct_towns = db.get_all_ct_towns()
+        scraper = CTTownScraper()
+        scraper.towns_data = [(t['town'], t['county']) for t in ct_towns]
+
+        if not scraper.validate_town(request.town):
+            raise HTTPException(status_code=400, detail=f"'{request.town}' is not a valid Connecticut town")
+
+        # Run scraping synchronously
+        integration = ScraperDatabaseIntegration()
+        stats = integration.scrape_and_store_cases(request.town)
+
+        return {
+            "message": f"Successfully scraped {request.town}",
+            "cases_found": stats['cases_found'],
+            "new_cases": stats['cases_stored'],
+            "existing_cases": stats['cases_skipped']
+        }
+    except HTTPException:
+        raise
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=str(e))
+
+
 @router.post("/scrape-all-towns", response_model=APIResponse)
 async def scrape_all_towns(
     background_tasks: BackgroundTasks,
