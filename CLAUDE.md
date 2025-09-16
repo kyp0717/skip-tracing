@@ -4,10 +4,10 @@ This file provides guidance for working with code in this repository.
 It contains rules for python development and deployment 
 
 ## Project Awareness & Context
-- Project contexts are located in `prps/` .
-- At the start of a new conversation, read `/prps/project_plan.md`to review project's architecture, style, and constraints.
-- At the start of a new conversation, read `/prps/task.md`to review project's architecture, style, and constraints.
-- At the start of a new conversation, read `/prps/requirements.md`to review project's architecture, style, and constraints.
+- Project contexts are located in `context/` .
+- At the start of a new conversation, read `/context/project_plan.md`to review project's architecture, style, and constraints.
+- At the start of a new conversation, read `/context/task.md`to review project's architecture, style, and constraints.
+- At the start of a new conversation, read `/context/requirements.md`to review project's architecture, style, and constraints.
 - At the start of a new conversation, review sessions log files in folder `logs` to understand project status and issues.
 
 ## Logs
@@ -19,7 +19,7 @@ It contains rules for python development and deployment
 - If a phase has been reimplemented or updated, summarized the changes and append the summary to the existing log file with datestamp. 
 
 ## Tasks 
-- Use the `tasks.md` file in the `prps/` to track the status of all the tasks that need to be done
+- Use the `tasks.md` file in the `context/` to track the status of all the tasks that need to be done
 - Add new tasks to the tasks.md file 
 - Do not work on tasks in the tasks.md that have already been completed.  Do not repeat these tasks.
 - **Mark completed tasks in `tasks.md`** immediately after finishing them.
@@ -75,6 +75,14 @@ It contains rules for python development and deployment
 - **Never create a file longer than 500 lines of code.** If a file approaches this limit, refactor by splitting it into modules or helper files.
 - **Organize code into clearly separated modules**, grouped by feature or responsibility.
 - Never hardcode sensitive information - Always use .env files for API keys and configuration
+
+## File Organization Rules
+- **ALL Python source code files MUST be placed in the `src/` folder** - NEVER place .py files in the root directory
+- **ALL test files MUST be placed in the `tests/` folder** - This includes all test_*.py files
+- **Scripts and utilities go in `scripts/` folder** - For setup scripts, migration scripts, etc.
+- **Configuration files stay in root** - Files like .env, requirements.txt, .gitignore remain in root
+- **Documentation goes in `docs/` folder** - All .md files except README.md and CLAUDE.md
+- **Main entry point**: The only exception is if explicitly requested, main.py can be in root as the entry point
 
 ### 📎 Modification Guideline
 - When modifying code, always ... tbd 
