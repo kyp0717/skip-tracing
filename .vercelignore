@@ -3,6 +3,7 @@ __pycache__/
 .pytest_cache/
 tests/
 src/
+backend-api/
 api/
 *.py
 requirements.txt
