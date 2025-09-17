@@ -1,0 +1,16 @@
+{
+  "name": "skip-trace-vercel",
+  "version": "1.0.0",
+  "private": true,
+  "scripts": {
+    "dev": "cd frontend && npm run dev",
+    "dev:vercel": "vercel dev",
+    "build": "cd frontend && npm install && npm run build",
+    "preview": "vercel",
+    "deploy": "vercel --prod",
+    "install:all": "npm install && cd frontend && npm install"
+  },
+  "devDependencies": {
+    "vercel": "^48.0.2"
+  }
+}

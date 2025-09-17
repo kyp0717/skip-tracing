@@ -15,7 +15,17 @@ class BatchAPIConnector:
         self.base_url = self._get_base_url(env)
         
     def _get_api_token(self, env):
-        """Load API token from CSV file based on environment."""
+        """Load API token from environment variable or CSV file based on environment."""
+        # First, check if BATCHDATA_API_KEY is set in environment variables
+        from dotenv import load_dotenv
+        load_dotenv()
+
+        api_key_from_env = os.environ.get('BATCHDATA_API_KEY')
+        if api_key_from_env:
+            print(f"Using BatchData API key from environment variable")
+            return api_key_from_env
+
+        # If not in env, try loading from CSV file
         # Try multiple possible locations for batchapi.csv
         possible_paths = [
             '../batchapi.csv',  # As specified in project_plan
@@ -23,18 +33,19 @@ class BatchAPIConnector:
             'batchapi.csv',     # Relative to working directory
             os.path.join(os.path.dirname(os.path.dirname(__file__)), 'batchapi.csv')
         ]
-        
+
         for csv_path in possible_paths:
             try:
                 with open(csv_path, 'r') as f:
                     reader = csv.reader(f)
                     for row in reader:
                         if row[0] == env:
+                            print(f"Using BatchData API key from CSV file")
                             return row[1]
             except FileNotFoundError:
                 continue
-        
-        print(f"Warning: batchapi.csv not found in any expected location")
+
+        print(f"Warning: No API key found. Check BATCHDATA_API_KEY env variable or batchapi.csv file")
         return None
 
     def _get_base_url(self, env):

@@ -21,19 +21,29 @@ logger = logging.getLogger(__name__)
 class SkipTraceIntegration:
     """Integrates BatchData API with database operations"""
 
-    def __init__(self, use_sandbox: bool = True):
+    def __init__(self, use_sandbox: Optional[bool] = None):
         """Initialize with database connection and API connector
 
         Args:
             use_sandbox: If True, use sandbox API and skiptrace_sandbox table
+                        If None, read from USE_SANDBOX env variable (default: True)
         """
+        # Load environment variables
+        from dotenv import load_dotenv
+        load_dotenv()
+
+        # Determine sandbox mode from env if not explicitly provided
+        if use_sandbox is None:
+            use_sandbox_env = os.environ.get('USE_SANDBOX', 'true').lower()
+            use_sandbox = use_sandbox_env in ['true', '1', 'yes']
+
         self.db = DatabaseConnector()
         self.use_sandbox = use_sandbox
         env = 'sandbox' if use_sandbox else 'prod'
         self.api = BatchAPIConnector(env)
         self.table_name = 'skiptrace_sandbox' if use_sandbox else 'skiptrace'
 
-        logger.info(f"SkipTrace integration initialized (sandbox={use_sandbox})")
+        logger.info(f"SkipTrace integration initialized (sandbox={use_sandbox}, env={env})")
 
     def parse_address(self, address_str: str, town: str = None) -> Dict[str, str]:
         """Parse address string into components for API"""

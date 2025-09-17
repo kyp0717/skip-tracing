@@ -1,6 +1,7 @@
 import axios from 'axios'
 
-// API base URL - pointing to FastAPI backend
+// API base URL - for local development, use the FastAPI backend
+// For Vercel deployment, this will be updated to use serverless functions
 const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:8000'
 
 const api = axios.create({

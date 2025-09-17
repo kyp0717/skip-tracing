@@ -7,3 +7,5 @@ outputs/
 .venv
 venv/
 .env.example
+.vercel
+node_modules/
