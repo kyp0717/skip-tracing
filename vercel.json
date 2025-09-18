@@ -3,9 +3,5 @@
   "outputDirectory": "frontend/dist",
   "installCommand": "cd frontend && npm install",
   "framework": "vite",
-  "functions": {
-    "api/*.py": false,
-    "src/*.py": false,
-    "**/*.py": false
-  }
+  "functions": {}
 }

@@ -1,11 +1,12 @@
+*.py
 *.pyc
 __pycache__/
 .pytest_cache/
 tests/
 src/
+python-src/
 backend-api/
 api/
-*.py
 requirements.txt
 .env
 .env.example
