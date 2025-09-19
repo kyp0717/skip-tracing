@@ -5,7 +5,9 @@ It contains rules for python development and deployment
 
 ## Project Awareness & Context
 - Project contexts are located in `context/` .
-- At the start of a new conversation, read `/context/project_plan.md`to review project's architecture, style, and constraints.
+- At the start of a new conversation, read `/context/project_plan_01_setup.md`to review project's architecture, style, and constraints.
+- At the start of a new conversation, read `/context/project_plan_02_implement:w
+.md`to review project's architecture, style, and constraints.
 - At the start of a new conversation, read `/context/task.md`to review project's architecture, style, and constraints.
 - At the start of a new conversation, read `/context/requirements.md`to review project's architecture, style, and constraints.
 - At the start of a new conversation, review sessions log files in folder `logs` to understand project status and issues.
@@ -75,4 +77,6 @@ It contains rules for python development and deployment
 - **Update `README.md`** when new features are added, dependencies change, or setup steps are modified.
 - **Comment non-obvious code** and ensure everything is understandable to a mid-level developer.
 - When writing complex logic, **add an inline `# Reason:` comment** explaining the why, not just the what.
-
+- use the town "Bethel" for testing.
+- input town name in the html id tag "ctl00_ContentPlaceHolder1_txtCityTown"
+- submit search by click button with html id tag "ctl00_ContentPlaceHolder1_btnSubmit"

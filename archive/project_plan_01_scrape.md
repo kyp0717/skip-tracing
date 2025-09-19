@@ -5,7 +5,6 @@
 2. If project plan already exist, modify and update as work progress.
 3. Modify and update tasks.md as needed as project progess.
 4. Utilize sub agents for specific tasks
-5. Run all tests in virtual environment using uv.
 6. Summarized at a high level the work completed as a log file in the format specified.
 7. When executing the test during the conversation: 
     - Display the heading with "FEATURE TEST: Phase xx - new_feature"
@@ -14,24 +13,23 @@
     - If test is successful, display success in green in the console.
 
 ## Goal
-- Build a web scraper in python.
+- Build a web scraper using nextjs and deploy to vercel and save the scrapted data to postgres database.
 - Scraper will scrape a CT Judiciary civil inquiry site to get a list of court cases by town.
-- Use the docket number to scrape the for the defendant name and address 
+- Use the docket number from the cases to scrape for case details such as defendant name and address 
 - Using the address, perform and http post request for phone numbers using the batchdata api.
 
 
 ## Phase 1 - Requirements
 - Create a file in folder /context/ call requirements.md
-- In the requirements, explain what are the technical requirements that are needed for development of a scraper using python.
+- In the requirements, explain what are the technical requirements that are needed for development of a scraper that can be deploy to vercel.
 - For example, if selenium is required for this development, explain its purposes.
-- In another section, list the python packages that are needed and why this is required.
 - In another section, list the api and url that are used for scraping. In this section, include the tags that are used.
 - Please feel free to add additional sections to explain anything else.
 - When this phase is completed, log a summary of what has been done in phase and save with format phase_log_yyyymmdd.md
 - Save the log file in `/log`.  If folder does not exist, create one.
 
 ## Phase 2 - Setup
-- Setup configuration files such as `requirement.txt` and others as needed.
+- Setup configuration files for implementation.
 
 ## Phase 3a - Open URL and extract HTML 
 - Do not implement testing. Only write or modify code in this phase.
