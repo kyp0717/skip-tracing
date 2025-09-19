@@ -99,7 +99,7 @@ export class CTJudiciaryScaper {
       console.log(`Found ${cases.length} cases`);
 
       // Add town to each case
-      return cases.map(c => ({ ...c, town }));
+      return cases.map((c: Omit<ScrapedCase, 'town'>) => ({ ...c, town }));
 
     } catch (error) {
       console.log('No results found or error extracting data:', error);
@@ -187,7 +187,7 @@ export class CTJudiciaryScaper {
 
     console.log(`Found ${defendants.length} defendants for docket ${docketNumber}`);
 
-    return defendants.map(d => ({ ...d, docket_number: docketNumber }));
+    return defendants.map((d: Omit<Defendant, 'docket_number'>) => ({ ...d, docket_number: docketNumber }));
   }
 }
 

@@ -8,8 +8,7 @@ It contains rules for python development and deployment
 - At the start of a new conversation, read `/context/project_plan_01_setup.md`to review project's architecture, style, and constraints.
 - At the start of a new conversation, read `/context/project_plan_02_implement:w
 .md`to review project's architecture, style, and constraints.
-- At the start of a new conversation, read `/context/task.md`to review project's architecture, style, and constraints.
-- At the start of a new conversation, read `/context/requirements.md`to review project's architecture, style, and constraints.
+- At the start of a new conversation, read `/context/tasks.md`to review project's architecture, style, and constraints.
 - At the start of a new conversation, review sessions log files in folder `logs` to understand project status and issues.
 
 ## Logs
