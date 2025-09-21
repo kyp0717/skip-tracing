@@ -59,11 +59,17 @@ export async function GET(request: NextRequest) {
       const townNames = townsInCounty.rows.map(t => t.town);
 
       if (townNames.length > 0) {
-        result = await sql`
-          SELECT * FROM cases
-          WHERE town = ANY(${townNames})
-          ORDER BY created_at DESC
-        `;
+        // Query for all towns in the county
+        const promises = townNames.map((townName: string) =>
+          sql`SELECT * FROM cases WHERE town = ${townName}`
+        );
+        const results = await Promise.all(promises);
+
+        // Combine all results and sort by created_at
+        const allRows = results.flatMap(r => r.rows);
+        allRows.sort((a, b) => new Date(b.created_at).getTime() - new Date(a.created_at).getTime());
+
+        result = { rows: allRows };
       } else {
         result = { rows: [] };
       }
