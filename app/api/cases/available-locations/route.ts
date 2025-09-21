@@ -29,7 +29,7 @@ export async function GET(request: NextRequest) {
     }
 
     // Get unique towns
-    const uniqueTowns = [...new Set(townsData?.map(r => r.town) || [])];
+    const uniqueTowns = Array.from(new Set(townsData?.map(r => r.town) || []));
 
     // Get counties for those towns
     const { data: countiesData, error: countiesError } = await supabase
@@ -43,7 +43,7 @@ export async function GET(request: NextRequest) {
     }
 
     // Get unique counties
-    const uniqueCounties = [...new Set(countiesData?.map(r => r.county) || [])].sort();
+    const uniqueCounties = Array.from(new Set(countiesData?.map(r => r.county) || [])).sort();
 
     return NextResponse.json({
       towns: uniqueTowns,
