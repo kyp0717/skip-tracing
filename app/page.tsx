@@ -21,18 +21,17 @@ export default function Home() {
             <p className="text-gray-600">Extract and view cases</p>
           </Link>
 
-          <div className="group p-8 bg-gray-50 border-2 border-gray-200 rounded-xl cursor-not-allowed opacity-75">
+          <Link href="/skip-trace" className="group p-8 bg-white border-2 border-gray-200 rounded-xl hover:border-green-500 hover:shadow-xl transition-all duration-200">
             <div className="flex items-center mb-4">
-              <div className="w-12 h-12 bg-gray-100 rounded-lg flex items-center justify-center">
-                <svg className="w-6 h-6 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M18.364 5.636l-3.536 3.536m0 5.656l3.536 3.536M9.172 9.172L5.636 5.636m3.536 9.192l-3.536 3.536M21 12a9 9 0 11-18 0 9 9 0 0118 0zm-5 0a4 4 0 11-8 0 4 4 0 018 0z" />
+              <div className="w-12 h-12 bg-green-100 rounded-lg flex items-center justify-center group-hover:bg-green-200 transition-colors">
+                <svg className="w-6 h-6 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 5a2 2 0 012-2h3.28a1 1 0 01.948.684l1.498 4.493a1 1 0 01-.502 1.21l-2.257 1.13a11.042 11.042 0 005.516 5.516l1.13-2.257a1 1 0 011.21-.502l4.493 1.498a1 1 0 01.684.949V19a2 2 0 01-2 2h-1C9.716 21 3 14.284 3 6V5z" />
                 </svg>
               </div>
-              <h3 className="text-xl font-semibold ml-4 text-gray-500">Skip Trace</h3>
+              <h3 className="text-xl font-semibold ml-4 group-hover:text-green-600 transition-colors">Skip Trace</h3>
             </div>
-            <p className="text-gray-500">Look up phone numbers</p>
-            <span className="inline-block mt-2 text-sm font-medium text-gray-400 bg-gray-200 px-3 py-1 rounded-full">Coming Soon</span>
-          </div>
+            <p className="text-gray-600">Look up phone numbers</p>
+          </Link>
         </div>
     </div>
   )

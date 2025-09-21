@@ -20,31 +20,34 @@ async function createTables() {
     `;
     console.log('✓ Cases table created');
 
-    // Create defendants table
+    // Create case_detail table
     await sql`
-      CREATE TABLE IF NOT EXISTS defendants (
+      CREATE TABLE IF NOT EXISTS case_detail (
         id SERIAL PRIMARY KEY,
-        docket_number VARCHAR(100) NOT NULL,
-        name VARCHAR(255) NOT NULL,
+        docket_number VARCHAR(100) NOT NULL UNIQUE,
         address TEXT,
         town VARCHAR(100),
         state VARCHAR(2),
         zip VARCHAR(10),
+        d_01 TEXT,
+        d_02 TEXT,
+        d_03 TEXT,
+        d_04 TEXT,
+        d_05 TEXT,
         created_at TIMESTAMP DEFAULT NOW(),
-        UNIQUE(docket_number, name),
         CONSTRAINT fk_docket_number
           FOREIGN KEY(docket_number)
           REFERENCES cases(docket_number)
           ON DELETE CASCADE
       );
     `;
-    console.log('✓ Defendants table created');
+    console.log('✓ Case detail table created');
 
     // Create skiptrace table
     await sql`
       CREATE TABLE IF NOT EXISTS skiptrace (
         id SERIAL PRIMARY KEY,
-        defendant_id INTEGER REFERENCES defendants(id) ON DELETE CASCADE,
+        defendant_id INTEGER REFERENCES case_detail(id) ON DELETE CASCADE,
         phone_number VARCHAR(20),
         phone_type VARCHAR(50),
         source VARCHAR(20) CHECK (source IN ('sandbox', 'production')),
@@ -56,7 +59,7 @@ async function createTables() {
 
     // Create indexes for better performance
     await sql`CREATE INDEX IF NOT EXISTS idx_docket_number ON cases(docket_number);`;
-    await sql`CREATE INDEX IF NOT EXISTS idx_defendants_docket ON defendants(docket_number);`;
+    await sql`CREATE INDEX IF NOT EXISTS idx_case_detail_docket ON case_detail(docket_number);`;
     await sql`CREATE INDEX IF NOT EXISTS idx_skiptrace_defendant ON skiptrace(defendant_id);`;
     console.log('✓ Indexes created');
 

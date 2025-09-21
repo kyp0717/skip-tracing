@@ -61,23 +61,27 @@ export async function POST(request: NextRequest) {
           }
         }
 
-        // Store defendants
+        // Store case details
         for (const defendant of defendants) {
           const { error: defError } = await supabase
-            .from('defendants')
+            .from('case_detail')
             .upsert({
               docket_number: defendant.docket_number,
-              name: defendant.name,
-              address: defendant.address,
-              town: defendant.town,
-              state: defendant.state,
-              zip: defendant.zip
+              address: defendant.address || null,
+              town: defendant.town || null,
+              state: defendant.state || null,
+              zip: defendant.zip || null,
+              d_01: defendant.d_01 || null,
+              d_02: defendant.d_02 || null,
+              d_03: defendant.d_03 || null,
+              d_04: defendant.d_04 || null,
+              d_05: defendant.d_05 || null
             }, {
-              onConflict: 'docket_number,name'
+              onConflict: 'docket_number'
             });
 
           if (defError) {
-            console.error('Error storing defendant:', defError);
+            console.error('Error storing case detail:', defError);
           }
         }
       }

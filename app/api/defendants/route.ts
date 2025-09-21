@@ -10,7 +10,7 @@ export async function GET(request: NextRequest) {
     if (docket_number) {
       result = await sql`
         SELECT d.*, c.case_name, c.town as case_town
-        FROM defendants d
+        FROM case_detail d
         JOIN cases c ON d.docket_number = c.docket_number
         WHERE d.docket_number = ${docket_number}
         ORDER BY d.created_at DESC
@@ -18,7 +18,7 @@ export async function GET(request: NextRequest) {
     } else {
       result = await sql`
         SELECT d.*, c.case_name, c.town as case_town
-        FROM defendants d
+        FROM case_detail d
         JOIN cases c ON d.docket_number = c.docket_number
         ORDER BY d.created_at DESC
         LIMIT 100
@@ -28,7 +28,7 @@ export async function GET(request: NextRequest) {
     return NextResponse.json({ defendants: result.rows });
   } catch (error) {
     console.error('Error fetching defendants:', error);
-    return NextResponse.json({ error: 'Failed to fetch defendants' }, { status: 500 });
+    return NextResponse.json({ error: 'Failed to fetch case details' }, { status: 500 });
   }
 }
 
@@ -38,7 +38,7 @@ export async function POST(request: NextRequest) {
     const { docket_number, name, address, town, state, zip } = body;
 
     const result = await sql`
-      INSERT INTO defendants (docket_number, name, address, town, state, zip)
+      INSERT INTO case_detail (docket_number, name, address, town, state, zip)
       VALUES (${docket_number}, ${name}, ${address}, ${town}, ${state}, ${zip})
       ON CONFLICT (docket_number, name)
       DO UPDATE SET
@@ -52,6 +52,6 @@ export async function POST(request: NextRequest) {
     return NextResponse.json({ defendant: result.rows[0] });
   } catch (error) {
     console.error('Error creating defendant:', error);
-    return NextResponse.json({ error: 'Failed to create defendant' }, { status: 500 });
+    return NextResponse.json({ error: 'Failed to create case detail' }, { status: 500 });
   }
 }
