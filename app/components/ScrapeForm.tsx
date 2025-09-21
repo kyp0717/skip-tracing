@@ -34,7 +34,7 @@ export default function ScrapeForm() {
         if (data.towns) {
           setTowns(data.towns);
           // Extract unique counties
-          const uniqueCounties = [...new Set(data.towns.map((t: Town) => t.county).filter(Boolean))].sort();
+          const uniqueCounties = Array.from(new Set(data.towns.map((t: Town) => t.county).filter(Boolean))).sort();
           setCounties(uniqueCounties);
         }
       } catch (error) {
