@@ -5,9 +5,10 @@ It contains rules for python development and deployment
 
 ## Project Awareness & Context
 - Project contexts are located in `context/` .
-- At the start of a new conversation, read `/context/project_plan.md`to review project's architecture, style, and constraints.
-- At the start of a new conversation, read `/context/task.md`to review project's architecture, style, and constraints.
-- At the start of a new conversation, read `/context/requirements.md`to review project's architecture, style, and constraints.
+- At the start of a new conversation, read `/context/project_plan_01_setup.md`to review project's architecture, style, and constraints.
+- At the start of a new conversation, read `/context/project_plan_02_implement:w
+.md`to review project's architecture, style, and constraints.
+- At the start of a new conversation, read `/context/tasks.md`to review project's architecture, style, and constraints.
 - At the start of a new conversation, review sessions log files in folder `logs` to understand project status and issues.
 
 ## Logs
@@ -57,12 +58,11 @@ It contains rules for python development and deployment
 * When adding any new feature to this project, follow this established pattern:
 
 1. **Module Structure**
-   - Create a new file in `src/` named after your feature (e.g., `email_lookup.py`, `data_validator.py`)
    - Define main struct and any result types needed
    - Implement core logic following existing patterns from `phone_lookup.py` 
 
 2. **Independent Testing**
-   - Create unit tests in `tests/test_your_feature_unit.py`
+   - Create unit tests in `tests/'
 
 5. **Development Process**
    - Follow strict TDD: RED → GREEN → REFACTOR
@@ -71,24 +71,11 @@ It contains rules for python development and deployment
    - Each feature must be completely independent and self-contained
    - Ask for permission before adding new methods or functions to existing modules
 
-## Structure & Modularity
-- **Never create a file longer than 500 lines of code.** If a file approaches this limit, refactor by splitting it into modules or helper files.
-- **Organize code into clearly separated modules**, grouped by feature or responsibility.
-- Never hardcode sensitive information - Always use .env files for API keys and configuration
-
-## File Organization Rules
-- **ALL Python source code files MUST be placed in the `src/` folder** - NEVER place .py files in the root directory
-- **ALL test files MUST be placed in the `tests/` folder** - This includes all test_*.py files
-- **Scripts and utilities go in `scripts/` folder** - For setup scripts, migration scripts, etc.
-- **Configuration files stay in root** - Files like .env, requirements.txt, .gitignore remain in root
-- **Documentation goes in `docs/` folder** - All .md files except README.md and CLAUDE.md
-- **Main entry point**: The only exception is if explicitly requested, main.py can be in root as the entry point
-
-### 📎 Modification Guideline
-- When modifying code, always ... tbd 
 
 ### 📚 Documentation & Explainability
 - **Update `README.md`** when new features are added, dependencies change, or setup steps are modified.
 - **Comment non-obvious code** and ensure everything is understandable to a mid-level developer.
 - When writing complex logic, **add an inline `# Reason:` comment** explaining the why, not just the what.
-
+- use the town "Bethel" for testing.
+- input town name in the html id tag "ctl00_ContentPlaceHolder1_txtCityTown"
+- submit search by click button with html id tag "ctl00_ContentPlaceHolder1_btnSubmit"
